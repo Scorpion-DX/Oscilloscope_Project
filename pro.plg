@@ -1,0 +1,31 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\12694\Desktop\嵌入式课程资料\结课作业\TFT\显示文字\pro.uvproj
+Project File Date:  11/04/2018
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+main.c(4): warning C318: can't open file 'XPT2046.h'
+compiling lcd_driver.c...
+compiling gui.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GUI_DROWSIGN?GUI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GUI_WRITE32CNCHAR?GUI
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GUI_WRITEASCII?GUI
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _READ_AD_DATA
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _READ_AD_DATA
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 1E00H
+Program Size: data=9.0 xdata=982 code=9190
+creating hex file from "pro"...
+"pro" - 0 Error(s), 6 Warning(s).

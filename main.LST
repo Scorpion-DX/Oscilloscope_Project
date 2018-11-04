@@ -1,0 +1,155 @@
+C51 COMPILER V9.00   MAIN                                                                  11/04/2018 12:51:31 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: I:\Program Files (x86)\C51\BIN\C51.EXE main.c LARGE BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include<reg52.h>
+   2          #include "gui.h"
+   3          #include "math.h"
+   4          #include "XPT2046.h"
+*** WARNING C318 IN LINE 4 OF main.c: can't open file 'XPT2046.h'
+   5          extern uint Read_AD_Data(uchar cmd);
+   6          unsigned char findappro(unsigned char dat1);
+   7          void ConnectLine();
+   8          unsigned int Date[96],xlabel[96],ylabel[96];
+   9          
+  10          void delay_10us(unsigned char i)
+  11          {
+  12   1              while(i--);
+  13   1      }
+  14          char AxisTriangleData[]=
+  15          {
+  16                  0,5,10,15,20,25,30,35,40,
+  17                  35,30,25,20,15,10,5,0,
+  18                  5,10,15,20,25,30,35,40,
+  19                  35,30,25,20,15,10,5,
+  20                  0,5,10,15,20,25,30,35,40,
+  21                  35,30,25,20,15,10,5,0,
+  22                  5,10,15,20,25,30,35,40,
+  23                  35,30,25,20,15,10,5,
+  24                  0,5,10,15,20,25,30,35,40,
+  25                  35,30,25,20,15,10,5,0,
+  26                  5,10,15,20,25,30,35,40,
+  27                  35,30,25,20,15,10,5,
+  28          };
+  29          unsigned char TriangleParam[]=
+  30          {
+  31                  0x00,0x10,0x20,0x30,0x40,0x50,0x60,0x70,
+  32                  0x80,0x90,0xa0,0xb0,0xc0,0xd0,0xe0,0xf0,
+  33                  0xff,0xf0,0xe0,0xd0,0xc0,0xb0,0xa0,0x90,
+  34                  0x80,0x70,0x60,0x50,0x40,0x30,0x20,0x10,
+  35                  0x00,0x10,0x20,0x30,0x40,0x50,0x60,0x70,
+  36                  0x80,0x90,0xa0,0xb0,0xc0,0xd0,0xe0,0xf0,
+  37                  0xff,0xf0,0xe0,0xd0,0xc0,0xb0,0xa0,0x90,
+  38                  0x80,0x70,0x60,0x50,0x40,0x30,0x20,0x10
+  39          };
+  40          
+  41          char AxisSquare[]={
+  42                  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  43                  50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,
+  44                  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  45                  50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,
+  46                  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  47                  50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50
+  48          };
+  49          
+  50          unsigned char SquareParam[64]=     //??
+  51          {
+  52                  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+  53                  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+  54                  0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+C51 COMPILER V9.00   MAIN                                                                  11/04/2018 12:51:31 PAGE 2   
+
+  55                  0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+  56                  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+  57                  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+  58                  0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+  59                  0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff
+  60          };
+  61          
+  62          unsigned char findappro(unsigned char dat1)
+  63          {
+  64   1              unsigned char i,apparo=0xff,flag,xlabel1;
+  65   1              for(i=0;i<32;i++)                          //限位
+  66   1              {
+  67   2                      if(apparo>abs(dat1-SquareParam[i]))
+  68   2                      {
+  69   3                              apparo=abs(dat1-SquareParam[i]);
+  70   3                              flag=i;
+  71   3                      }
+  72   2              }
+  73   1              /*
+  74   1              加提示
+  75   1              */
+  76   1      
+  77   1              xlabel1=(AxisSquare[flag]+40)*(dat1/(SquareParam[flag]))+120;
+  78   1              //xlabel1=(AxisTriangleData[flag])*(dat1/(TriangleParam[flag]))+120;
+  79   1              return xlabel1; 
+  80   1      }
+  81          
+  82          void ConnectLine()
+  83          {
+  84   1              unsigned int i;
+  85   1              xlabel[0]=120;ylabel[0]=20;
+  86   1              for(i=1;i<=40;i++)
+  87   1              {
+  88   2                              Date[i]=Read_AD_Data(0xEC);     //未定义？？？
+  89   2                              xlabel[i]=findappro(Date[i]);
+  90   2                              ylabel[i]=15*i+20;
+  91   2                              GUI_Line(xlabel[i-1],ylabel[i-1],xlabel[i],ylabel[i],0xF800);
+  92   2                              delay_10us(4);
+  93   2              }
+  94   1      }
+  95          
+  96          void DrawGrip()
+  97          {
+  98   1              unsigned char i,j;
+  99   1                      //初始界面文字
+ 100   1              
+ 101   1              GUI_Line(10,10,230,10,BLACK);//标尺x
+ 102   1              for(i=0;i<=10;i++)
+ 103   1                      GUI_Line(10+22*i,10,10+22*i,13,BLACK);
+ 104   1              GUI_Line(230,24,230,354,BLACK);//标尺y
+ 105   1              //网格
+ 106   1              for(i=0;i<=15;i++)
+ 107   1                      GUI_Line(227,27+22*i,230,27+22*i,BLACK);
+ 108   1              
+ 109   1              for(i=0;i<=14;i++)
+ 110   1                      GUI_Line(20,20+20*i,220,20+20*i,BLACK);
+ 111   1              for(j=0;j<=10;j++)
+ 112   1                      GUI_Line(20+20*j,20,20+j*20,300,BLACK);
+ 113   1              GUI_Line(20,160,220,162,BLUE);
+ 114   1              GUI_Line(120,20,122,300,BLUE);
+ 115   1              
+ 116   1      
+C51 COMPILER V9.00   MAIN                                                                  11/04/2018 12:51:31 PAGE 3   
+
+ 117   1      }
+ 118          
+ 119          void main()
+ 120          {
+ 121   1                      TFT_Init();
+ 122   1                      TFT_ClearScreen(WHITE);   //刷黑色
+ 123   1      
+ 124   1                      DrawGrip();
+ 125   1                      ConnectLine();
+ 126   1                      while(1);//?????        
+ 127   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    823    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    896       8
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
